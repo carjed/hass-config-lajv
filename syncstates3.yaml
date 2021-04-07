@@ -1,11 +1,11 @@
 # 
 # Home Assistant Automation Blueprint
 #
-# Synchronize on/off states on three devices
+# Synchronize on/off states on multiple devices with queue
 #
-# Revision 2
+# Revision 8 with single mode and delay
 # Modified by Johan Schelin, Mar. 2021
-#
+# Modified from https://github.com/johanschelin/ha_blueprints/blob/4f1f05b6150257b3ad0b7f396010025ec110e26e/SyncStatesFour.yml
 
 blueprint:
   name: Synchronize Three States
@@ -27,17 +27,25 @@ blueprint:
       selector:
         entity:
           #domain: switch
+mode: restart
+max_exceeded: silent
+variables:
+  switch_1: !input 'switch_1'
+  switch_2: !input 'switch_2'
+  switch_3: !input 'switch_3'
 trigger:
-  - entity_id:
-    - !input switch_1
-    - !input switch_2
-    - !input switch_3
-    platform: state
+  - platform: state
+    entity_id: !input 'switch_1'
+  - platform: state
+    entity_id: !input 'switch_2'
+  - platform: state
+    entity_id: !input 'switch_3'  
 action:
-  - entity_id:
-    - !input switch_1
-    - !input switch_2
-    - !input switch_3
-    service: 'homeassistant.turn_{{ trigger.to_state.state }}'
-
-mode: single
+- entity_id:
+  - '{% if trigger.from_state.entity_id == switch_1 %} {{ switch_2 }}'
+  - '{% if trigger.from_state.entity_id == switch_1 %} {{ switch_3 }}'
+  - '{% if trigger.from_state.entity_id == switch_2 %} {{ switch_1 }}'
+  - '{% if trigger.from_state.entity_id == switch_2 %} {{ switch_3 }}'
+  - '{% if trigger.from_state.entity_id == switch_3 %} {{ switch_1 }}'
+  - '{% if trigger.from_state.entity_id == switch_3 %} {{ switch_2 }}'
+  service:  homeassistant.turn_{{ trigger.to_state.state }}
