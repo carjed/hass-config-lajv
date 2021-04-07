@@ -39,11 +39,12 @@ trigger:
     entity_id: !input 'entity_3'  
 action:
   - service:  homeassistant.turn_{{ trigger.to_state.state }}
-    entity_id:
-      - '{% if trigger.from_state.entity_id == entity_1 %} {{ entity_2 }} {% else %} {{ entity_1 }} {% endif %}'
-      - '{% if trigger.from_state.entity_id == entity_1 %} {{ entity_3 }} {% else %} {{ entity_1 }} {% endif %}'
-      - '{% if trigger.from_state.entity_id == entity_2 %} {{ entity_1 }} {% else %} {{ entity_2 }} {% endif %}'
-      - '{% if trigger.from_state.entity_id == entity_2 %} {{ entity_3 }} {% else %} {{ entity_2 }} {% endif %}'
-      - '{% if trigger.from_state.entity_id == entity_3 %} {{ entity_1 }} {% else %} {{ entity_3 }} {% endif %}'
-      - '{% if trigger.from_state.entity_id == entity_3 %} {{ entity_2 }} {% else %} {{ entity_3 }} {% endif %}'
+    data:
+      entity_id:
+        - '{% if trigger.from_state.entity_id == entity_1 %} {{ entity_2 }} {% else %} {{ entity_1 }} {% endif %}'
+        - '{% if trigger.from_state.entity_id == entity_1 %} {{ entity_3 }} {% else %} {{ entity_1 }} {% endif %}'
+        - '{% if trigger.from_state.entity_id == entity_2 %} {{ entity_1 }} {% else %} {{ entity_2 }} {% endif %}'
+        - '{% if trigger.from_state.entity_id == entity_2 %} {{ entity_3 }} {% else %} {{ entity_2 }} {% endif %}'
+        - '{% if trigger.from_state.entity_id == entity_3 %} {{ entity_1 }} {% else %} {{ entity_3 }} {% endif %}'
+        - '{% if trigger.from_state.entity_id == entity_3 %} {{ entity_2 }} {% else %} {{ entity_3 }} {% endif %}'
 
